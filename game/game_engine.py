@@ -32,9 +32,7 @@ class GameEngine:
         if event.type == pygame.KEYDOWN:
             if self.stamina <= 10:
                 return
-            
-            # BUG SYMPTOM: 
-            # Adding to arm_position pushes it toward the COMPUTER instead of reducing it to win.
+                
             if event.key == pygame.K_LEFT:
                 if self.last_key != pygame.K_LEFT: 
                     self.arm_position += 4.2
