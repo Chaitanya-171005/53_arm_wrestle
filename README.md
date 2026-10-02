@@ -45,19 +45,19 @@ Each task must be completed using an iterative process involving LLM suggestions
 
 ### Task 1: Fix the inverted arm push bug
 
-To win the match, the player needs to pull arm_position toward negative values (<= -self.target_limit). In the current build, when the player alternates Left and Right arrow keys, the input handler adds +4.2 to self.arm_position instead of subtracting it. This helps the computer pin the player instead of resisting. Correct the sign operation so player inputs push the arm toward the player's winning threshold.
+Alternating Left and Right arrow keys pushes the arm toward the computer's side instead of pulling it toward the player's side, causing the player to pin themselves. Ensure that player keystrokes push the hands toward the player's winning threshold.
 
-### Task 2: Implement dynamic AI surge / difficulty spikes
+### Task 2: Implement dynamic AI surge
 
-Currently, the AI applies force at a constant average rate using static math (self.ai_strength * ai_variance). Implement an AI stamina or surge mechanism in game_engine.update() where the computer builds up energy, periodically triggers a "power surge" with increased force for 1–2 seconds, and then enters an exhausted state with reduced resistance, creating a dynamic back-and-forth rhythm.
+The computer currently applies force at a predictable constant rate. Introduce an AI stamina cycle where the computer periodically enters a brief high-power surge with increased pushing force, followed by a cooldown period with reduced resistance
 
 ### Task 3: Implement an exhaustion warning indicator
 
-When the player drops below 10 stamina, button inputs are disabled until stamina regenerates. However, there is no immediate visual cue explaining why inputs stopped working. Add visual feedback—such as flashing the stamina bar red, displaying an "EXHAUSTED!" label, or causing the player's arm to tremble—whenever stamina is below the usable threshold of 10.
+Building upon Task 2's surge cycle, give the player visual cues for fatigue states. Display an active warning indicator when the AI enters its power surge, and show an exhaustion state whenever the player's stamina drops too low to push
 
-### Task 4: Implement an exhaustion warning indicator
+### Task 4: Implement counter-surge bonus resistance
 
-When the player drops below 10 stamina, button inputs are disabled until stamina regenerates. However, there is no immediate visual cue explaining why inputs stopped working. Add visual feedback—such as flashing the stamina bar red, displaying an "EXHAUSTED!" label, or causing the player's arm to tremble—whenever stamina is below the usable threshold of 10.
+Building upon the warnings in Task 3, reward strategic timing during fatigue states. If the player pushes right as the AI's surge ends and enters its cooldown phase, grant a temporary stamina recovery boost and double push strength to mount a comeback.
 
 ---
 
