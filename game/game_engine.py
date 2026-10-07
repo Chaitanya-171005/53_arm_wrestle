@@ -20,7 +20,6 @@ class GameEngine:
         self.game_state = "PLAYING"
         self.ai_strength = 0.35
 
-        # Dynamic AI phase system
         self.ai_phase = "NORMAL"
         self.ai_phase_start = pygame.time.get_ticks()
         self.ai_phase_duration = random.randint(2500, 4500)
@@ -54,31 +53,25 @@ class GameEngine:
         if self.game_state != "PLAYING":
             return
 
-        # Check whether the current AI phase has expired
         current_time = pygame.time.get_ticks()
 
         if current_time - self.ai_phase_start >= self.ai_phase_duration:
             if self.ai_phase == "NORMAL":
-                # Normal -> Surge
                 self.ai_phase = "SURGE"
                 self.ai_phase_duration = random.randint(700, 1300)
 
             elif self.ai_phase == "SURGE":
-                # Surge -> Cooldown
                 self.ai_phase = "COOLDOWN"
                 self.ai_phase_duration = random.randint(1500, 2500)
 
             else:
-                # Cooldown -> Normal
                 self.ai_phase = "NORMAL"
                 self.ai_phase_duration = random.randint(2500, 4500)
 
             self.ai_phase_start = current_time
 
-        # Preserve the existing random AI variance
         ai_variance = random.uniform(0.3, 1.0)
 
-        # Adjust AI force according to its current phase
         if self.ai_phase == "SURGE":
             ai_force = self.ai_strength * 2.2
 
@@ -108,7 +101,6 @@ class GameEngine:
         self.winner = None
         self.game_state = "PLAYING"
 
-        # Restart AI cycle from Normal with a new random duration
         self.ai_phase = "NORMAL"
         self.ai_phase_start = pygame.time.get_ticks()
         self.ai_phase_duration = random.randint(2500, 4500)
@@ -249,6 +241,7 @@ class GameEngine:
         screen.blit(stamina_label, (40, 445))
 
         stamina_bg = pygame.Rect(140, 448, 240, 22)
+
         stamina_fill = pygame.Rect(
             140,
             448,
@@ -276,11 +269,44 @@ class GameEngine:
             border_radius=6
         )
 
+        # Flash a warning while the AI is in its Surge phase.
+        if self.ai_phase == "SURGE":
+            current_time = pygame.time.get_ticks()
+
+            if (current_time // 250) % 2 == 0:
+                surge_surf = self.font_big.render(
+                    "AI Surge!",
+                    True,
+                    (255, 210, 60)
+                )
+
+                screen.blit(
+                    surge_surf,
+                    (
+                        self.width // 2 - surge_surf.get_width() // 2,
+                        65
+                    )
+                )
+
+        # Show that player input is blocked when stamina is too low.
+        if self.stamina <= 10:
+            exhausted_surf = self.font_med.render(
+                "Exhausted",
+                True,
+                (240, 80, 80)
+            )
+
+            screen.blit(
+                exhausted_surf,
+                (400, 445)
+            )
+
         if self.game_state == "GAME_OVER":
             overlay = pygame.Surface(
                 (self.width, self.height),
                 pygame.SRCALPHA
             )
+
             overlay.fill((0, 0, 0, 200))
             screen.blit(overlay, (0, 0))
 
